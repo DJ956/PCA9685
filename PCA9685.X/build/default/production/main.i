@@ -4327,26 +4327,35 @@ void OSCILLATOR_Initialize(void);
 # 94
 void WDT_Initialize(void);
 
-# 18 "PCA9685.h"
-void init();
-void set_pwm_freq(uint8_t freq);
-void set_pwm(uint8_t num, uint16_t on, uint16_t off);
-
-uint8_t map(uint8_t ang, uint8_t target_min, uint8_t target_max, uint8_t src_min, uint16_t src_max);
-
-void servo_write(uint8_t ch, uint8_t ang);
-
-uint8_t _read(uint8_t address);
+# 8 "PCA9685.h"
+uint8_t _read();
 void _write(uint8_t addr, uint8_t);
 
-# 5 "main.c"
+void init();
+void set_pwm_freq(uint16_t freq);
+void set_pwm(uint8_t num, uint16_t on, uint16_t off);
+
+uint8_t map(uint16_t ang, uint16_t target_min, uint16_t target_max, uint16_t src_min, uint16_t src_max);
+
+void servo_write(uint8_t ch, uint16_t ang);
+
+# 8 "main.c"
 void main(void)
 {
 
 SYSTEM_Initialize();
+init();
+
+set_pwm_freq(50);
+
+uint16_t n = 0;
 
 while (1)
 {
+servo_write(0, n);
+n += 10;
+if(n == 180){ n = 0; }
 
+_delay((unsigned long)((500)*(500000/4000.0)));
 }
 }

@@ -4,7 +4,7 @@
     <configuration>
         <data xmlns="http://www.netbeans.org/ns/make-project/1">
             <name>PCA9685</name>
-            <creation-uuid>df68e477-8f7a-4a34-ab9a-65978ae78f22</creation-uuid>
+            <creation-uuid>265c9589-9127-40ff-933b-3660850b931e</creation-uuid>
             <make-project-type>0</make-project-type>
             <c-extensions>c</c-extensions>
             <cpp-extensions/>

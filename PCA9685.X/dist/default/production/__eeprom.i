@@ -1,5 +1,5 @@
 
-# 1 "PCA9685.c"
+# 1 "C:\Program Files\Microchip\xc8\v2.30\pic\sources\c90\pic\__eeprom.c"
 
 # 18 "C:\Program Files\Microchip\xc8\v2.30\pic\include\xc.h"
 extern const char __xc8_OPTIM_SPEED;
@@ -4292,92 +4292,175 @@ extern __bank0 unsigned char __resetbits;
 extern __bank0 __bit __powerdown;
 extern __bank0 __bit __timeout;
 
-# 6 "i2c.h"
-void i2c_wait();
-void i2c_start();
-void i2c_stop();
-void i2c_repeated_start();
-void i2c_write(uint8_t data);
-uint8_t i2c_read(uint8_t ack);
+# 5 "C:\Program Files\Microchip\xc8\v2.30\pic\sources\c90\pic\__eeprom.c"
+void
+__eecpymem(volatile unsigned char *to, __eeprom unsigned char * from, unsigned char size)
+{
+volatile unsigned char *cp = to;
 
-# 8 "PCA9685.h"
-uint8_t _read();
-void _write(uint8_t addr, uint8_t);
+while (EECON1bits.WR) continue;
+EEADR = (unsigned char)from;
+while(size--) {
+while (EECON1bits.WR) continue;
 
-void init();
-void set_pwm_freq(uint16_t freq);
-void set_pwm(uint8_t num, uint16_t on, uint16_t off);
+EECON1 &= 0x7F;
 
-uint8_t map(uint16_t ang, uint16_t target_min, uint16_t target_max, uint16_t src_min, uint16_t src_max);
-
-void servo_write(uint8_t ch, uint16_t ang);
-
-# 16 "PCA9685.c"
-void _write(uint8_t addr, uint8_t d){
-i2c_start();
-i2c_write(0x40);
-i2c_write(addr);
-i2c_write(d);
-i2c_stop();
+EECON1bits.RD = 1;
+*cp++ = EEDATA;
+++EEADR;
 }
 
-# 28
-uint8_t _read(){
-uint8_t data;
-i2c_start();
-i2c_write(0x40 | 0x01);
-data = i2c_read(0x0);
+# 36
+}
 
+void
+__memcpyee(__eeprom unsigned char * to, const unsigned char *from, unsigned char size)
+{
+const unsigned char *ptr =from;
+
+while (EECON1bits.WR) continue;
+EEADR = (unsigned char)to - 1U;
+
+EECON1 &= 0x7F;
+
+while(size--) {
+while (EECON1bits.WR) {
+continue;
+}
+EEDATA = *ptr++;
+++EEADR;
+STATUSbits.CARRY = 0;
+if (INTCONbits.GIE) {
+STATUSbits.CARRY = 1;
+}
+INTCONbits.GIE = 0;
+EECON1bits.WREN = 1;
+EECON2 = 0x55;
+EECON2 = 0xAA;
+EECON1bits.WR = 1;
+EECON1bits.WREN = 0;
+if (STATUSbits.CARRY) {
+INTCONbits.GIE = 1;
+}
+}
+
+# 101
+}
+
+unsigned char
+__eetoc(__eeprom void *addr)
+{
+unsigned char data;
+__eecpymem((unsigned char *) &data,addr,1);
 return data;
 }
 
-# 40
-void init(){
-i2c_start();
-i2c_write(0x40);
-
-i2c_write(0x0);
-i2c_write(0x0);
-
-i2c_stop();
+unsigned int
+__eetoi(__eeprom void *addr)
+{
+unsigned int data;
+__eecpymem((unsigned char *) &data,addr,2);
+return data;
 }
 
-# 56
-void set_pwm(uint8_t num, uint16_t on, uint16_t off){
-i2c_start();
-i2c_write(0x40);
-i2c_write(0x06 + 4 * num);
-i2c_write(on);
-i2c_write(on >> 8);
-i2c_write(off);
-i2c_write(off >> 8);
-i2c_stop();
+#pragma warning push
+#pragma warning disable 2040
+__uint24
+__eetom(__eeprom void *addr)
+{
+__uint24 data;
+__eecpymem((unsigned char *) &data,addr,3);
+return data;
+}
+#pragma warning pop
+
+unsigned long
+__eetol(__eeprom void *addr)
+{
+unsigned long data;
+__eecpymem((unsigned char *) &data,addr,4);
+return data;
 }
 
-# 71
-void set_pwm_freq(uint16_t freq){
-uint16_t prescaleval = 6103;
-prescaleval /= freq;
-prescaleval -= 1;
+#pragma warning push
+#pragma warning disable 1516
+unsigned long long
+__eetoo(__eeprom void *addr)
+{
+unsigned long long data;
+__eecpymem((unsigned char *) &data,addr,8);
+return data;
+}
+#pragma warning pop
 
-uint8_t prescale = (uint8_t)prescaleval;
-uint8_t oldreg = _read();
-uint8_t newreg = (oldreg | 0x7F) | 0x10;
-_write(0x0, newreg);
-_write(0xFE, prescale);
-_write(0x0, oldreg);
-_delay((unsigned long)((500)*(500000/4000.0)));
-_write(0x0, oldreg | 0xA1);
-
+unsigned char
+__ctoee(__eeprom void *addr, unsigned char data)
+{
+__memcpyee(addr,(unsigned char *) &data,1);
+return data;
 }
 
-
-uint8_t map(uint16_t ang, uint16_t target_min, uint16_t target_max, uint16_t src_min, uint16_t src_max){
-return (ang - target_min) * (src_max - src_min) / (target_min - target_max) + src_min;
+unsigned int
+__itoee(__eeprom void *addr, unsigned int data)
+{
+__memcpyee(addr,(unsigned char *) &data,2);
+return data;
 }
 
-# 97
-void servo_write(uint8_t ch, uint16_t ang){
-ang = map(ang, 0, 180, 150, 500);
-set_pwm(ch, 0, ang);
+#pragma warning push
+#pragma warning disable 2040
+__uint24
+__mtoee(__eeprom void *addr, __uint24 data)
+{
+__memcpyee(addr,(unsigned char *) &data,3);
+return data;
 }
+#pragma warning pop
+
+unsigned long
+__ltoee(__eeprom void *addr, unsigned long data)
+{
+__memcpyee(addr,(unsigned char *) &data,4);
+return data;
+}
+
+#pragma warning push
+#pragma warning disable 1516
+unsigned long long
+__otoee(__eeprom void *addr, unsigned long long data)
+{
+__memcpyee(addr,(unsigned char *) &data,8);
+return data;
+}
+#pragma warning pop
+
+float
+__eetoft(__eeprom void *addr)
+{
+float data;
+__eecpymem((unsigned char *) &data,addr,3);
+return data;
+}
+
+double
+__eetofl(__eeprom void *addr)
+{
+double data;
+__eecpymem((unsigned char *) &data,addr,4);
+return data;
+}
+
+float
+__fttoee(__eeprom void *addr, float data)
+{
+__memcpyee(addr,(unsigned char *) &data,3);
+return data;
+}
+
+double
+__fltoee(__eeprom void *addr, double data)
+{
+__memcpyee(addr,(unsigned char *) &data,4);
+return data;
+}
+
