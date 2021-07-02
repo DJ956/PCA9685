@@ -1,5 +1,5 @@
 Version 3.2 HI-TECH Software Intermediate Code
-"3097 C:\Program Files\Microchip\xc8\v2.30\pic\include\proc\pic16f1827.h
+"3097 C:\Program Files\Microchip\xc8\v2.32\pic\include\proc\pic16f1827.h
 [s S157 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
 [n S157 . RD WR WREN WRERR FREE LWLO CFGS EEPGD ]
 "3096
@@ -73,7 +73,7 @@ Version 3.2 HI-TECH Software Intermediate Code
 [; ;builtins.h: 14: extern __nonreentrant void _delaywdt(uint32_t);
 [; ;builtins.h: 17: extern __nonreentrant void _delay3(uint8_t);
 [; ;pic16f1827.h: 53: extern volatile unsigned char INDF0 __at(0x000);
-"55 C:\Program Files\Microchip\xc8\v2.30\pic\include\proc\pic16f1827.h
+"55 C:\Program Files\Microchip\xc8\v2.32\pic\include\proc\pic16f1827.h
 [; ;pic16f1827.h: 55: asm("INDF0 equ 00h");
 [; <" INDF0 equ 00h ;# ">
 [; ;pic16f1827.h: 58: typedef union {
@@ -2819,7 +2819,7 @@ Version 3.2 HI-TECH Software Intermediate Code
 [; ;pic.h: 127: extern __bank0 unsigned char __resetbits;
 [; ;pic.h: 128: extern __bank0 __bit __powerdown;
 [; ;pic.h: 129: extern __bank0 __bit __timeout;
-"6 C:\Program Files\Microchip\xc8\v2.30\pic\sources\c90\pic\__eeprom.c
+"6 C:\Program Files\Microchip\xc8\v2.32\pic\sources\c90\pic\__eeprom.c
 [v ___eecpymem `(v ~T0 @X0 1 ef3`*Vuc`*Euc`uc ]
 "7
 {

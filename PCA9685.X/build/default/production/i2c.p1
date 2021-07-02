@@ -1,5 +1,5 @@
 Version 3.2 HI-TECH Software Intermediate Code
-"4463 C:\Program Files\Microchip\xc8\v2.30\pic\include\proc\pic16f1827.h
+"4463 C:\Program Files\Microchip\xc8\v2.32\pic\include\proc\pic16f1827.h
 [v _SSP2CON2 `Vuc ~T0 @X0 0 e@542 ]
 "4331
 [v _SSP2STAT `Vuc ~T0 @X0 0 e@540 ]
@@ -68,7 +68,7 @@ Version 3.2 HI-TECH Software Intermediate Code
 [; ;builtins.h: 14: extern __nonreentrant void _delaywdt(uint32_t);
 [; ;builtins.h: 17: extern __nonreentrant void _delay3(uint8_t);
 [; ;pic16f1827.h: 53: extern volatile unsigned char INDF0 __at(0x000);
-"55 C:\Program Files\Microchip\xc8\v2.30\pic\include\proc\pic16f1827.h
+"55 C:\Program Files\Microchip\xc8\v2.32\pic\include\proc\pic16f1827.h
 [; ;pic16f1827.h: 55: asm("INDF0 equ 00h");
 [; <" INDF0 equ 00h ;# ">
 [; ;pic16f1827.h: 58: typedef union {

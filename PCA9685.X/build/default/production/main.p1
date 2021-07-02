@@ -2,16 +2,28 @@ Version 3.2 HI-TECH Software Intermediate Code
 [p mainexit ]
 "69 mcc_generated_files/mcc.h
 [v _SYSTEM_Initialize `(v ~T0 @X0 0 ef ]
+"2914 C:\Program Files\Microchip\xc8\v2.32\pic\include\proc\pic16f1827.h
+[v _ANSELB `Vuc ~T0 @X0 0 e@397 ]
+"3517
+[v _WPUB `Vuc ~T0 @X0 0 e@525 ]
+"4291
+[v _SSP2ADD `Vuc ~T0 @X0 0 e@538 ]
+"4393
+[v _SSP2CON1 `Vuc ~T0 @X0 0 e@541 ]
+"4463
+[v _SSP2CON2 `Vuc ~T0 @X0 0 e@542 ]
+"4331
+[v _SSP2STAT `Vuc ~T0 @X0 0 e@540 ]
+[v F38 `(v ~T0 @X0 1 tf1`ul ]
+"12 C:\Program Files\Microchip\xc8\v2.32\pic\include\builtins.h
+[v __delay `JF38 ~T0 @X0 0 e ]
+[p i __delay ]
 "11 PCA9685.h
 [v _init `(v ~T0 @X0 0 ef ]
 "12
 [v _set_pwm_freq `(v ~T0 @X0 0 ef1`ui ]
 "17
-[v _servo_write `(v ~T0 @X0 0 ef2`uc`ui ]
-[v F38 `(v ~T0 @X0 1 tf1`ul ]
-"12 C:\Program Files\Microchip\xc8\v2.30\pic\include\builtins.h
-[v __delay `JF38 ~T0 @X0 0 e ]
-[p i __delay ]
+[v _servo_write `(v ~T0 @X0 0 ef2`uc`i ]
 [; ;xc.h: 18: extern const char __xc8_OPTIM_SPEED;
 [; ;xc.h: 20: extern double __fpnormalize(double);
 [; ;xc8debug.h: 14: extern void __builtin_software_breakpoint(void);
@@ -48,7 +60,7 @@ Version 3.2 HI-TECH Software Intermediate Code
 [; ;builtins.h: 14: extern __nonreentrant void _delaywdt(uint32_t);
 [; ;builtins.h: 17: extern __nonreentrant void _delay3(uint8_t);
 [; ;pic16f1827.h: 53: extern volatile unsigned char INDF0 __at(0x000);
-"55 C:\Program Files\Microchip\xc8\v2.30\pic\include\proc\pic16f1827.h
+"55 C:\Program Files\Microchip\xc8\v2.32\pic\include\proc\pic16f1827.h
 [; ;pic16f1827.h: 55: asm("INDF0 equ 00h");
 [; <" INDF0 equ 00h ;# ">
 [; ;pic16f1827.h: 58: typedef union {
@@ -2809,13 +2821,13 @@ Version 3.2 HI-TECH Software Intermediate Code
 [; ;mcc.h: 69: void SYSTEM_Initialize(void);
 [; ;mcc.h: 82: void OSCILLATOR_Initialize(void);
 [; ;mcc.h: 94: void WDT_Initialize(void);
-[; ;PCA9685.h: 8: uint8_t _read();
+[; ;PCA9685.h: 8: uint8_t _read(uint8_t addr);
 [; ;PCA9685.h: 9: void _write(uint8_t addr, uint8_t);
 [; ;PCA9685.h: 11: void init();
 [; ;PCA9685.h: 12: void set_pwm_freq(uint16_t freq);
 [; ;PCA9685.h: 13: void set_pwm(uint8_t num, uint16_t on, uint16_t off);
-[; ;PCA9685.h: 15: uint8_t map(uint16_t ang, uint16_t target_min, uint16_t target_max, uint16_t src_min, uint16_t src_max);
-[; ;PCA9685.h: 17: void servo_write(uint8_t ch, uint16_t ang);
+[; ;PCA9685.h: 15: uint16_t map(uint16_t x, uint16_t in_min, uint16_t in_max, uint16_t out_min, uint16_t out_max);
+[; ;PCA9685.h: 17: void servo_write(uint8_t ch, int ang);
 [v $root$_main `(v ~T0 @X0 0 e ]
 "8 main.c
 [v _main `(v ~T0 @X0 1 ef ]
@@ -2828,46 +2840,67 @@ Version 3.2 HI-TECH Software Intermediate Code
 [; ;main.c: 11: SYSTEM_Initialize();
 "11
 [e ( _SYSTEM_Initialize ..  ]
-[; ;main.c: 12: init();
-"12
-[e ( _init ..  ]
-[; ;main.c: 14: set_pwm_freq(50);
+[; ;main.c: 13: ANSELB = 0xCA;
+"13
+[e = _ANSELB -> -> 202 `i `uc ]
+[; ;main.c: 14: WPUB = 0x24;
 "14
-[e ( _set_pwm_freq (1 -> -> 50 `i `ui ]
+[e = _WPUB -> -> 36 `i `uc ]
+[; ;main.c: 16: SSP2ADD = 0x13;
 "16
-[v _n `ui ~T0 @X0 1 a ]
-[; ;main.c: 16: uint16_t n = 0;
-[e = _n -> -> 0 `i `ui ]
-[; ;main.c: 18: while (1)
+[e = _SSP2ADD -> -> 19 `i `uc ]
+[; ;main.c: 17: SSP2CON1 = 0x28;
+"17
+[e = _SSP2CON1 -> -> 40 `i `uc ]
+[; ;main.c: 18: SSP2CON2 = 0x0;
 "18
-[e :U 351 ]
-[; ;main.c: 19: {
+[e = _SSP2CON2 -> -> 0 `i `uc ]
+[; ;main.c: 19: SSP2STAT = 0;
 "19
-{
-[; ;main.c: 20: servo_write(0, n);
-"20
-[e ( _servo_write (2 , -> -> 0 `i `uc _n ]
-[; ;main.c: 21: n += 10;
+[e = _SSP2STAT -> -> 0 `i `uc ]
+[; ;main.c: 21: _delay((unsigned long)((500)*(8000000/4000.0)));
 "21
+[e ( __delay (1 -> * -> -> 500 `i `d / -> -> 8000000 `l `d .4000.0 `ul ]
+[; ;main.c: 23: init();
+"23
+[e ( _init ..  ]
+[; ;main.c: 25: set_pwm_freq(50);
+"25
+[e ( _set_pwm_freq (1 -> -> 50 `i `ui ]
+"27
+[v _n `ui ~T0 @X0 1 a ]
+[; ;main.c: 27: uint16_t n = 0;
+[e = _n -> -> 0 `i `ui ]
+[; ;main.c: 29: while (1)
+"29
+[e :U 351 ]
+[; ;main.c: 30: {
+"30
+{
+[; ;main.c: 31: servo_write(0, n);
+"31
+[e ( _servo_write (2 , -> -> 0 `i `uc -> _n `i ]
+[; ;main.c: 32: n += 10;
+"32
 [e =+ _n -> -> 10 `i `ui ]
-[; ;main.c: 22: if(n == 180){ n = 0; }
-"22
-[e $ ! == _n -> -> 180 `i `ui 353  ]
+[; ;main.c: 33: if(n >= 180){ n = 0; }
+"33
+[e $ ! >= _n -> -> 180 `i `ui 353  ]
 {
 [e = _n -> -> 0 `i `ui ]
 }
 [e :U 353 ]
-[; ;main.c: 24: _delay((unsigned long)((500)*(500000/4000.0)));
-"24
-[e ( __delay (1 -> * -> -> 500 `i `d / -> -> 500000 `l `d .4000.0 `ul ]
-"25
+[; ;main.c: 35: _delay((unsigned long)((500)*(8000000/4000.0)));
+"35
+[e ( __delay (1 -> * -> -> 500 `i `d / -> -> 8000000 `l `d .4000.0 `ul ]
+"36
 }
 [e :U 350 ]
-"18
+"29
 [e $U 351  ]
 [e :U 352 ]
-[; ;main.c: 25: }
-[; ;main.c: 26: }
-"26
+[; ;main.c: 36: }
+[; ;main.c: 37: }
+"37
 [e :UE 349 ]
 }

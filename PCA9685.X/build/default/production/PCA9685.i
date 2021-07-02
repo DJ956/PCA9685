@@ -1,17 +1,17 @@
 
 # 1 "PCA9685.c"
 
-# 18 "C:\Program Files\Microchip\xc8\v2.30\pic\include\xc.h"
+# 18 "C:\Program Files\Microchip\xc8\v2.32\pic\include\xc.h"
 extern const char __xc8_OPTIM_SPEED;
 
 extern double __fpnormalize(double);
 
 
-# 13 "C:\Program Files\Microchip\xc8\v2.30\pic\include\c90\xc8debug.h"
+# 13 "C:\Program Files\Microchip\xc8\v2.32\pic\include\c90\xc8debug.h"
 #pragma intrinsic(__builtin_software_breakpoint)
 extern void __builtin_software_breakpoint(void);
 
-# 13 "C:\Program Files\Microchip\xc8\v2.30\pic\include\c90\stdint.h"
+# 13 "C:\Program Files\Microchip\xc8\v2.32\pic\include\c90\stdint.h"
 typedef signed char int8_t;
 
 # 20
@@ -98,7 +98,7 @@ typedef int16_t intptr_t;
 typedef uint16_t uintptr_t;
 
 
-# 7 "C:\Program Files\Microchip\xc8\v2.30\pic\include\builtins.h"
+# 7 "C:\Program Files\Microchip\xc8\v2.32\pic\include\builtins.h"
 #pragma intrinsic(__nop)
 extern void __nop(void);
 
@@ -111,7 +111,7 @@ extern __nonreentrant void _delaywdt(uint32_t);
 #pragma intrinsic(_delay3)
 extern __nonreentrant void _delay3(uint8_t);
 
-# 53 "C:\Program Files\Microchip\xc8\v2.30\pic\include\proc\pic16f1827.h"
+# 53 "C:\Program Files\Microchip\xc8\v2.32\pic\include\proc\pic16f1827.h"
 extern volatile unsigned char INDF0 __at(0x000);
 
 asm("INDF0 equ 00h");
@@ -4276,18 +4276,18 @@ extern volatile __bit nTO __at(0x1C);
 
 extern volatile __bit nWPUEN __at(0x4AF);
 
-# 76 "C:\Program Files\Microchip\xc8\v2.30\pic\include\pic.h"
+# 76 "C:\Program Files\Microchip\xc8\v2.32\pic\include\pic.h"
 __attribute__((__unsupported__("The " "FLASH_READ" " macro function is no longer supported. Please use the MPLAB X MCC."))) unsigned char __flash_read(unsigned short addr);
 
 __attribute__((__unsupported__("The " "FLASH_WRITE" " macro function is no longer supported. Please use the MPLAB X MCC."))) void __flash_write(unsigned short addr, unsigned short data);
 
 __attribute__((__unsupported__("The " "FLASH_ERASE" " macro function is no longer supported. Please use the MPLAB X MCC."))) void __flash_erase(unsigned short addr);
 
-# 114 "C:\Program Files\Microchip\xc8\v2.30\pic\include\eeprom_routines.h"
+# 114 "C:\Program Files\Microchip\xc8\v2.32\pic\include\eeprom_routines.h"
 extern void eeprom_write(unsigned char addr, unsigned char value);
 extern unsigned char eeprom_read(unsigned char addr);
 
-# 127 "C:\Program Files\Microchip\xc8\v2.30\pic\include\pic.h"
+# 127 "C:\Program Files\Microchip\xc8\v2.32\pic\include\pic.h"
 extern __bank0 unsigned char __resetbits;
 extern __bank0 __bit __powerdown;
 extern __bank0 __bit __timeout;
@@ -4301,40 +4301,46 @@ void i2c_write(uint8_t data);
 uint8_t i2c_read(uint8_t ack);
 
 # 8 "PCA9685.h"
-uint8_t _read();
+uint8_t _read(uint8_t addr);
 void _write(uint8_t addr, uint8_t);
 
 void init();
 void set_pwm_freq(uint16_t freq);
 void set_pwm(uint8_t num, uint16_t on, uint16_t off);
 
-uint8_t map(uint16_t ang, uint16_t target_min, uint16_t target_max, uint16_t src_min, uint16_t src_max);
+uint16_t map(uint16_t x, uint16_t in_min, uint16_t in_max, uint16_t out_min, uint16_t out_max);
 
-void servo_write(uint8_t ch, uint16_t ang);
+void servo_write(uint8_t ch, int ang);
 
 # 16 "PCA9685.c"
 void _write(uint8_t addr, uint8_t d){
 i2c_start();
-i2c_write(0x40);
+i2c_write(0x80);
 i2c_write(addr);
 i2c_write(d);
 i2c_stop();
 }
 
 # 28
-uint8_t _read(){
+uint8_t _read(uint8_t addr){
 uint8_t data;
 i2c_start();
-i2c_write(0x40 | 0x01);
-data = i2c_read(0x0);
+i2c_write(0x80);
+i2c_write(addr);
+
+i2c_repeated_start();
+
+i2c_write(0x80 | 0x01);
+data = i2c_read(0x0 | 0x01);
+i2c_stop();
 
 return data;
 }
 
-# 40
+# 46
 void init(){
 i2c_start();
-i2c_write(0x40);
+i2c_write(0x80);
 
 i2c_write(0x0);
 i2c_write(0x0);
@@ -4342,10 +4348,10 @@ i2c_write(0x0);
 i2c_stop();
 }
 
-# 56
+# 62
 void set_pwm(uint8_t num, uint16_t on, uint16_t off){
 i2c_start();
-i2c_write(0x40);
+i2c_write(0x80);
 i2c_write(0x06 + 4 * num);
 i2c_write(on);
 i2c_write(on >> 8);
@@ -4354,30 +4360,30 @@ i2c_write(off >> 8);
 i2c_stop();
 }
 
-# 71
+# 77
 void set_pwm_freq(uint16_t freq){
 uint16_t prescaleval = 6103;
 prescaleval /= freq;
 prescaleval -= 1;
 
 uint8_t prescale = (uint8_t)prescaleval;
-uint8_t oldreg = _read();
-uint8_t newreg = (oldreg | 0x7F) | 0x10;
+uint8_t oldreg = _read(0x0);
+uint8_t newreg = (oldreg & 0x7F) | 0x10;
 _write(0x0, newreg);
 _write(0xFE, prescale);
 _write(0x0, oldreg);
-_delay((unsigned long)((500)*(500000/4000.0)));
+_delay((unsigned long)((5)*(8000000/4000.0)));
 _write(0x0, oldreg | 0xA1);
 
 }
 
 
-uint8_t map(uint16_t ang, uint16_t target_min, uint16_t target_max, uint16_t src_min, uint16_t src_max){
-return (ang - target_min) * (src_max - src_min) / (target_min - target_max) + src_min;
+uint16_t map(uint16_t x, uint16_t in_min, uint16_t in_max, uint16_t out_min, uint16_t out_max){
+return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
 
-# 97
-void servo_write(uint8_t ch, uint16_t ang){
+# 103
+void servo_write(uint8_t ch, int ang){
 ang = map(ang, 0, 180, 150, 500);
 set_pwm(ch, 0, ang);
 }

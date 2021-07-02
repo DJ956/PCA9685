@@ -9,6 +9,17 @@ void main(void)
 {
     
     SYSTEM_Initialize();
+    
+    ANSELB = 0xCA;
+    WPUB = 0x24;
+    
+    SSP2ADD = 0x13;
+    SSP2CON1 = 0x28;
+    SSP2CON2 = 0x0;
+    SSP2STAT = 0;
+    
+    __delay_ms(500);
+    
     init();
     
     set_pwm_freq(50);
@@ -19,7 +30,7 @@ void main(void)
     {
         servo_write(SERVO_CH, n);
         n += 10;
-        if(n == 180){ n = 0; }
+        if(n >= 180){ n = 0; }
         
         __delay_ms(500);
     }
